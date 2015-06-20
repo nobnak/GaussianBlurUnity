@@ -1,11 +1,10 @@
 fileFormatVersion: 2
-guid: 1c5a0daf97430ee41ae1762f92678c21
-timeCreated: 1434812885
+guid: 9ddbd5fb1970830459409c69f5379714
+timeCreated: 1434815002
 licenseType: Pro
 MonoImporter:
   serializedVersion: 2
-  defaultReferences:
-  - gaussianMat: {fileID: 2100000, guid: 4b8cb3d896f814842b7facd5dd24ca43, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
