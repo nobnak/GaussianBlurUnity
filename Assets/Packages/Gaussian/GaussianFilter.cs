@@ -9,29 +9,32 @@ namespace Gaussian {
 		public Material gaussianMat;
 
 		void OnRenderImage(RenderTexture src, RenderTexture dst) {
-			src = DownSample(src, lod);
-
-			var tmp0 = RenderTexture.GetTemporary(src.width, src.height, 0, src.format);
-			var tmp1 = RenderTexture.GetTemporary(src.width, src.height, 0, src.format);
-
-			var iters = Mathf.Clamp(nIterations, 0, 10);
-			Graphics.Blit(src, tmp0);
-			for (var i = 0; i < iters; i++) {
-				for (var pass = 1; pass < 3; pass++) {
-					tmp1.DiscardContents();
-					tmp0.filterMode = FilterMode.Bilinear;
-					Graphics.Blit(tmp0, tmp1, gaussianMat, pass);
-					var tmpSwap = tmp0; tmp0 = tmp1; tmp1 = tmpSwap;
-				}
-			}
-			Graphics.Blit(tmp0, dst);
-
+			src = DownSample(src, lod, gaussianMat);
+			Blur (src, dst, nIterations, gaussianMat);
 			RenderTexture.ReleaseTemporary(src);
-			RenderTexture.ReleaseTemporary(tmp0);
-			RenderTexture.ReleaseTemporary(tmp1);
 		}
 
-		RenderTexture DownSample(RenderTexture src, int lod) {
+		public static void Blur (RenderTexture src, RenderTexture dst, int nIterations, Material gaussianMat) {
+			var tmp0 = RenderTexture.GetTemporary (src.width, src.height, 0, src.format);
+			var tmp1 = RenderTexture.GetTemporary (src.width, src.height, 0, src.format);
+			var iters = Mathf.Clamp (nIterations, 0, 10);
+			Graphics.Blit (src, tmp0);
+			for (var i = 0; i < iters; i++) {
+				for (var pass = 1; pass < 3; pass++) {
+					tmp1.DiscardContents ();
+					tmp0.filterMode = FilterMode.Bilinear;
+					Graphics.Blit (tmp0, tmp1, gaussianMat, pass);
+					var tmpSwap = tmp0;
+					tmp0 = tmp1;
+					tmp1 = tmpSwap;
+				}
+			}
+			Graphics.Blit (tmp0, dst);
+			RenderTexture.ReleaseTemporary (tmp0);
+			RenderTexture.ReleaseTemporary (tmp1);
+		}
+
+		public static RenderTexture DownSample(RenderTexture src, int lod, Material gaussianMat) {
 			var dst = RenderTexture.GetTemporary(src.width, src.height, 0 , src.format);
 			src.filterMode = FilterMode.Bilinear;
 			Graphics.Blit(src, dst);
